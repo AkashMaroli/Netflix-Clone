@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:netflixclonesecond/models/movie_model.dart';
+import 'package:netflixclonesecond/services/api_services.dart';
 import 'package:netflixclonesecond/widget/carousel.dart';
 import 'package:netflixclonesecond/widget/slider_movies.dart';
 
@@ -10,7 +12,19 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+@override
 class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<MovieModel>> trendingMovies;
+  late Future<List<MovieModel>> topRatedMovies;
+  late Future<List<MovieModel>> upcomingMovies;
+  @override
+  void initState() {
+    super.initState();
+    trendingMovies = ApiServices().getTrendingMovies();
+    topRatedMovies = ApiServices().getTopRatedMovies();
+    upcomingMovies = ApiServices().getUpcomingMovies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +75,25 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 10,
               ),
-              const SlidingCarousel(),
+              // const SlidingCarousel(), //!remove this line
+              //!uncomment below lines
+              SizedBox(
+                child: FutureBuilder(
+                    future: trendingMovies,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        print(snapshot.error.toString());
+                        return Center(child: Text(snapshot.error.toString()));
+                      } else if (snapshot.hasData) {
+                        // final data = snapshot.data;
+                        return SlidingCarousel(
+                          snapshot: snapshot,
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    }),
+              ),
               const SizedBox(
                 height: 30,
               ),
@@ -72,7 +104,26 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 30,
               ),
-              const SliderMovies(),
+              //! second row of movies
+              //const SliderMovies(),
+
+              SizedBox(
+                child: FutureBuilder(
+                    future: topRatedMovies,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        print(snapshot.error.toString());
+                        return Center(child: Text(snapshot.error.toString()));
+                      } else if (snapshot.hasData) {
+                        // final data = snapshot.data;
+                        return SliderMovies(
+                          snapshot: snapshot,
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    }),
+              ),
               const SizedBox(
                 height: 30,
               ),
@@ -83,7 +134,26 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 30,
               ),
-              const SliderMovies(),
+              //! 3rd row of movies
+              // const SliderMovies(),
+              
+              SizedBox(
+                child: FutureBuilder(
+                    future: upcomingMovies,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        print(snapshot.error.toString());
+                        return Center(child: Text(snapshot.error.toString()));
+                      } else if (snapshot.hasData) {
+                        // final data = snapshot.data;
+                        return SliderMovies(
+                          snapshot: snapshot,
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    }),
+              ),
             ],
           ),
         ),
