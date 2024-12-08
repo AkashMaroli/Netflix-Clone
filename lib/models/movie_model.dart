@@ -17,7 +17,7 @@ class MovieModel {
 
   factory MovieModel.fromJson(Map<String, dynamic> json) {
     return MovieModel(
-        title: json["title"],
+        title: json["title"]??'',
         backDropPath: json["backdrop_path"],
         originalTitle: json["original_title"],
         overview: json["overview"],

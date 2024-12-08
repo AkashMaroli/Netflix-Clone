@@ -14,6 +14,10 @@ class ApiServices {
 static const upcomingUrl =
       'https://api.themoviedb.org/3/movie/upcoming?api_key=${Constants.apiKey}';
 
+
+
+
+
   Future<List<MovieModel>> getTrendingMovies() async {
     //!trending url name is not a private
     final response = await http.get(Uri.parse(trendingUrl));
@@ -39,10 +43,25 @@ static const upcomingUrl =
       throw Exception('Something happened');
     }
   }
-  
+
   Future<List<MovieModel>> getUpcomingMovies() async {
     //!trending url name is not a private
     final response = await http.get(Uri.parse(upcomingUrl));
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final decordedData = json.decode(response.body)['results'] as List;
+      print(decordedData);
+      return decordedData.map((movie) => MovieModel.fromJson(movie)).toList();
+    } else {
+      throw Exception('Something happened');
+    }
+  }
+
+   Future<List<MovieModel>> getSearchMovies(String query) async {
+    final searchMoviesUrl =
+      'https://api.themoviedb.org/3/search/movie?api_key=${Constants.apiKey}&query=$query';
+    //!trending url name is not a private
+    final response = await http.get(Uri.parse(searchMoviesUrl));
     print(response.statusCode);
     if (response.statusCode == 200) {
       final decordedData = json.decode(response.body)['results'] as List;

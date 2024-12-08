@@ -36,7 +36,7 @@ class BottomNavBar extends StatelessWidget {
             labelColor: Colors.white,
           ),
         ),
-        body: const TabBarView(
+        body:  TabBarView(
             children: [HomeScreen(), SearchScreen(), MoreScreen()]),
       ),
     );
