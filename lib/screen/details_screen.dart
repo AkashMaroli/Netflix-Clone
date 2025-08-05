@@ -2,14 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:netflixclonesecond/common/constants.dart';
 import 'package:netflixclonesecond/models/movie_model.dart';
+import 'package:netflixclonesecond/services/api_services.dart';
+import 'package:netflixclonesecond/widget/movie_grid_widget.dart';
 
-class DetailingScreen extends StatelessWidget {
+class DetailingScreen extends StatefulWidget {
   const DetailingScreen({super.key, required this.movieModel});
   final MovieModel movieModel;
+
+  @override
+  State<DetailingScreen> createState() => _DetailingScreenState();
+}
+
+class _DetailingScreenState extends State<DetailingScreen> {
+  late Future<List<MovieModel>> movieTopRataed;
+  @override
+  void initState() {
+    super.initState();
+    movieTopRataed = ApiServices().getTopRatedMovies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
+        scrollBehavior: ScrollBehavior(),
         slivers: [
           SliverAppBar.large(
             leading: Container(
@@ -32,17 +48,18 @@ class DetailingScreen extends StatelessWidget {
             pinned: true,
             floating: true,
             flexibleSpace: FlexibleSpaceBar(
-              // title: Text(
-              //   movieModel.title,
-              //   style: GoogleFonts.belleza(
-              //       fontSize: 17, fontWeight: FontWeight.bold),
-              // ),
               background: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(
-                  "${Constants.imageUrl}${movieModel.posterPath}",
+                  widget.movieModel.posterPath != null
+                      ? "${Constants.imageUrl}${widget.movieModel.posterPath}"
+                      : 'assets\netflixpic.jpg',
                   filterQuality: FilterQuality.high,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                        'assets/netflix_logo.jpg'); // Local fallback
+                  },
                 ),
               ),
             ),
@@ -62,7 +79,7 @@ class DetailingScreen extends StatelessWidget {
                     height: 20,
                   ),
                   Text(
-                    movieModel.overview,
+                    widget.movieModel.overview,
                     style: GoogleFonts.roboto(
                         fontSize: 20, fontWeight: FontWeight.w400),
                     textAlign: TextAlign.justify,
@@ -85,7 +102,7 @@ class DetailingScreen extends StatelessWidget {
                                   fontSize: 17, fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              movieModel.releaseData,
+                              widget.movieModel.releaseData,
                               style: GoogleFonts.roboto(
                                   fontSize: 17, fontWeight: FontWeight.bold),
                             )
@@ -93,9 +110,35 @@ class DetailingScreen extends StatelessWidget {
                         ),
                       )
                     ]),
-                  )
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'More like this',
+                    style: GoogleFonts.openSans(
+                        fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
                 ],
               ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              // height: 500,
+              child: FutureBuilder(
+                  future: movieTopRataed,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(child: Text(snapshot.error.toString()));
+                    } else if (snapshot.hasData) {
+                      return GridMovies(
+                        snapshot: snapshot,
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
             ),
           )
         ],

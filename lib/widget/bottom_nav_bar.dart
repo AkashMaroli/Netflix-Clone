@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:netflixclonesecond/screen/home_screen.dart';
 import 'package:netflixclonesecond/screen/more_screen.dart';
+import 'package:netflixclonesecond/screen/new_&_hot.dart';
 import 'package:netflixclonesecond/screen/search_screen.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -10,7 +11,7 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         bottomNavigationBar: Container(
           color: Colors.black,
@@ -27,9 +28,13 @@ class BottomNavBar extends StatelessWidget {
                 icon: Icon(Icons.search),
                 text: "Search",
               ),
+               Tab(
+                icon: Icon(Icons.photo_library_rounded),
+                text: "New&hot",
+              ),
               Tab(
-                icon: Icon(Icons.photo_library_outlined),
-                text: "New & Hot",
+                icon: Icon(Icons.settings),
+                text: "Settings",
               )
             ],
             indicatorColor: Colors.transparent,
@@ -37,7 +42,7 @@ class BottomNavBar extends StatelessWidget {
           ),
         ),
         body:  TabBarView(
-            children: [HomeScreen(), SearchScreen(), MoreScreen()]),
+            children: [HomeScreen(), SearchScreen(),NewAndHotScreen(), MoreScreen()]),
       ),
     );
   }

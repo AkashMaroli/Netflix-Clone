@@ -18,11 +18,11 @@ class MovieModel {
   factory MovieModel.fromJson(Map<String, dynamic> json) {
     return MovieModel(
         title: json["title"]??'',
-        backDropPath: json["backdrop_path"],
-        originalTitle: json["original_title"],
-        overview: json["overview"],
-        posterPath: json["poster_path"],
-        releaseData: json["release_date"],
-        voteAverage: json["vote_average"]);
+        backDropPath: json["backdrop_path"]??'assets/netflix_logo.png',
+        originalTitle: json["original_title"]??'',
+        overview: json["overview"]??'',
+        posterPath: json["poster_path"]??'',
+        releaseData: json["release_date"]??'',
+        voteAverage: json["vote_average"] ??'');
   }
 }

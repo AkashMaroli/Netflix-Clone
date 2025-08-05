@@ -5,7 +5,7 @@ import 'package:netflixclonesecond/screen/details_screen.dart';
 import 'package:netflixclonesecond/services/api_services.dart';
 
 class SearchScreen extends StatefulWidget {
-  SearchScreen({
+  const SearchScreen({
     super.key,
   });
 
@@ -19,7 +19,6 @@ class _SearchScreenState extends State<SearchScreen> {
   List<MovieModel> searchFinalResult = [];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     topSearch = ApiServices().getTrendingMovies();
   }
@@ -36,7 +35,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 100),
+          preferredSize: const Size(double.infinity, 100),
           child: TextFormField(
             controller: searchController,
             decoration: InputDecoration(
@@ -47,15 +46,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 hintText: 'Search',
                 hintStyle: const TextStyle(color: Colors.white, fontSize: 20),
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: const BorderSide(color: Colors.white),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: const BorderSide(color: Colors.white),
                   borderRadius: BorderRadius.circular(20),
                 )),
             onChanged: (value) {
-              searchForMovies(value); // Rebuild UI on text change
+              searchForMovies(value);
             },
           ),
         ),
@@ -64,8 +63,6 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Kept the original TextFormField with minor styling adjustments
-
               const SizedBox(
                 height: 20,
               ),
@@ -74,7 +71,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       'Top Search',
                       style: TextStyle(fontSize: 22, color: Colors.white),
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               const SizedBox(
                 height: 20,
               ),
@@ -93,33 +90,46 @@ class _SearchScreenState extends State<SearchScreen> {
                               itemCount: snapshot.data!.length,
                               scrollDirection: Axis.vertical,
                               itemBuilder: (context, index) {
-                                return GestureDetector(onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>  DetailingScreen(movieModel: snapshot.data![index],)));
-                    },
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DetailingScreen(
+                                                  movieModel:
+                                                      snapshot.data![index],
+                                                )));
+                                  },
                                   child: Row(
                                     children: [
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
                                         child: Container(
-                                          height: 120,
-                                          width: 120,
-                                          color: Colors.amber,
-                                          // Changed fit to BoxFit.cover for better image scaling
-                                          child: Image.network(
-                                            '${Constants.imageUrl}${snapshot.data![index].posterPath}',
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
+                                            height: 120,
+                                            width: 120,
+                                          //  color: Colors.amber,
+                                            // Changed fit to BoxFit.cover for better image scaling
+                                            child: snapshot.data![index]
+                                                        .backDropPath !=
+                                                    null
+                                                ? Image.network(
+                                                    '${Constants.imageUrl}${snapshot.data![index].backDropPath}',
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : Image.asset(
+                                                    'assets/netflix_logo.jpg')),
                                       ),
                                       const SizedBox(width: 10),
-                                      Text(
-                                        snapshot.data![index].title,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
+                                      SizedBox(
+                                        width: 200,
+                                        child: Text(
+                                          snapshot.data![index].title,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                     ],
@@ -134,12 +144,12 @@ class _SearchScreenState extends State<SearchScreen> {
                               },
                             );
                           } else {
-                            return CircularProgressIndicator();
+                            return const SizedBox();
                           }
                         })
                     : searchController.text.isNotEmpty &&
                             searchFinalResult.isEmpty
-                        ? Center(child: Text('Not found'))
+                        ? const Center(child: Text('Not found'))
                         : GridView.builder(
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
@@ -149,12 +159,16 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                             itemCount: searchFinalResult.length,
                             itemBuilder: (context, index) {
-                              return GestureDetector(onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>  DetailingScreen(movieModel: searchFinalResult[index],)));
-                    },
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => DetailingScreen(
+                                                movieModel:
+                                                    searchFinalResult[index],
+                                              )));
+                                },
                                 child: SizedBox(
                                   child: Column(
                                     // Changed to a standard Column without Expanded
@@ -163,9 +177,21 @@ class _SearchScreenState extends State<SearchScreen> {
                                         borderRadius: BorderRadius.circular(10),
                                         child: SizedBox(
                                           child: Image.network(
-                                            '${Constants.imageUrl}${searchFinalResult[index].posterPath}',
-                                            // Changed fit to BoxFit.cover for better image scaling
+                                            searchFinalResult[index]
+                                                        .posterPath !=
+                                                    null
+                                                ? '${Constants.imageUrl}${searchFinalResult[index].posterPath}'
+                                                : 'assets/netflix_logo.jpg',
                                             fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Image.asset(
+                                                'assets/netflixpic.jpg',
+                                                height: 157,
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
                                             height: 157,
                                             width: double.infinity,
                                           ),
@@ -174,7 +200,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       // Added text style for consistency
                                       Text(
                                         searchFinalResult[index].title,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.white,
                                             overflow: TextOverflow.ellipsis),
                                       )

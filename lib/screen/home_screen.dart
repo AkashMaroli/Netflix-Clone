@@ -17,12 +17,15 @@ class _HomeScreenState extends State<HomeScreen> {
   late Future<List<MovieModel>> trendingMovies;
   late Future<List<MovieModel>> topRatedMovies;
   late Future<List<MovieModel>> upcomingMovies;
+  late Future<List<MovieModel>> topTvShows;
   @override
   void initState() {
     super.initState();
     trendingMovies = ApiServices().getTrendingMovies();
     topRatedMovies = ApiServices().getTopRatedMovies();
     upcomingMovies = ApiServices().getUpcomingMovies();
+    topTvShows = ApiServices().getTopTvShows();
+    topRatedMovies.whenComplete(() => 'completed data');
   }
 
   @override
@@ -39,27 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 130,
           ),
         ),
-        actions: [
-          const InkWell(
-              child: Icon(
-            Icons.search,
-            color: Colors.white,
-          )),
-          const SizedBox(
-            width: 10,
-          ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: Container(
-              color: Colors.blue,
-              height: 27,
-              width: 27,
-            ),
-          ),
-          const SizedBox(
-            width: 20,
-          )
-        ],
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -75,8 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 10,
               ),
-              // const SlidingCarousel(), //!remove this line
-              //!uncomment below lines
               SizedBox(
                 child: FutureBuilder(
                     future: trendingMovies,
@@ -90,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           snapshot: snapshot,
                         );
                       } else {
-                        return CircularProgressIndicator();
+                        return CircularProgressIndicator(backgroundColor: Colors.white,);
                       }
                     }),
               ),
@@ -136,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               //! 3rd row of movies
               // const SliderMovies(),
-              
+
               SizedBox(
                 child: FutureBuilder(
                     future: upcomingMovies,
@@ -154,6 +134,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     }),
               ),
+              const SizedBox(
+                height: 30,
+              ),
+              // const Text(
+              //   "Top Tv Shows",
+              //   style: TextStyle(fontSize: 25),
+              // ),
+              // const SizedBox(
+              //   height: 30,
+              // ),
+              // SizedBox(
+              //   child: FutureBuilder(
+              //       future: topTvShows,
+              //       builder: (context, snapshot) {
+              //         if (snapshot.hasError) {
+              //           print(snapshot.error.toString());
+              //           return Center(child: Text(snapshot.error.toString()));
+              //         } else if (snapshot.hasData) {
+              //           // final data = snapshot.data;
+              //           return SliderMovies(
+              //             snapshot: snapshot,
+              //           );
+              //         } else {
+              //           return CircularProgressIndicator();
+              //         }
+              //       }),
+              // ),
             ],
           ),
         ),

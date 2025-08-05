@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:netflixclonesecond/common/constants.dart';
 import 'package:netflixclonesecond/screen/details_screen.dart';
-import 'package:netflixclonesecond/services/api_services.dart';
 
 class SliderMovies extends StatelessWidget {
   const SliderMovies({
@@ -35,7 +34,7 @@ class SliderMovies extends StatelessWidget {
                       width: 150,
                       child: Image.network(
                           filterQuality: FilterQuality.high,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                           "${Constants.imageUrl}${snapshot.data[index].posterPath}"),
                     ),
                   ),
